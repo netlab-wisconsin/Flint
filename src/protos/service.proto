@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package FLINT_RPC_SERVICE;
+
+import "message.proto";
+
+service VolumeService {
+  rpc GetFlintMetadata(FLINT_RPC_MESSAGE.GetFlintMetadataRequest) returns (FLINT_RPC_MESSAGE.GetFlintMetadataResponse) {}
+  rpc CreateVolume(FLINT_RPC_MESSAGE.CreateVolumeRequest) returns (FLINT_RPC_MESSAGE.CreateVolumeResponse) {}
+  rpc OpenVolume(FLINT_RPC_MESSAGE.OpenVolumeRequest) returns (FLINT_RPC_MESSAGE.OpenVolumeResponse) {}
+  rpc DeleteVolume(FLINT_RPC_MESSAGE.DeleteVolumeRequest) returns (FLINT_RPC_MESSAGE.DeleteVolumeResponse) {}
+  rpc ListVolumes(FLINT_RPC_MESSAGE.ListVolumeRequest) returns (FLINT_RPC_MESSAGE.ListVolumeResponse) {}
+  rpc VolumeExtentFault(FLINT_RPC_MESSAGE.VolumeExtentFaultRequest) returns (FLINT_RPC_MESSAGE.VolumeExtentFaultResponse) {}
+}
+
+service SchedulerService {
+  rpc RegisterClient(FLINT_RPC_MESSAGE.RegisterRequest) returns (FLINT_RPC_MESSAGE.RegisterResponse) {}
+  rpc UnregisterClient(FLINT_RPC_MESSAGE.RegisterRequest) returns (FLINT_RPC_MESSAGE.RegisterResponse) {}
+  rpc UpdateClientSlo(FLINT_RPC_MESSAGE.RegisterRequest) returns (FLINT_RPC_MESSAGE.RegisterResponse) {}
+  rpc RegisterEventCallbacks(FLINT_RPC_MESSAGE.RegisterEventCallbackRequest) returns (FLINT_RPC_MESSAGE.RegisterEventCallbackResponse) {}
+  rpc PullView(FLINT_RPC_MESSAGE.PullViewRequest) returns (FLINT_RPC_MESSAGE.PullViewResponse) {}
+  rpc ReportCmpl(FLINT_RPC_MESSAGE.ReportCmplRequest) returns (FLINT_RPC_MESSAGE.ReportCmplResponse) {}
+  rpc RequestIOSlice(FLINT_RPC_MESSAGE.RequestIOSliceRequest) returns (FLINT_RPC_MESSAGE.RequestIOSliceResponse) {}
+}
+
+service LocalSchedulerService {
+  rpc PushView(FLINT_RPC_MESSAGE.PushViewRequest) returns (FLINT_RPC_MESSAGE.PushViewResponse) {}
+  rpc BottleneckReport(FLINT_RPC_MESSAGE.BottleneckReportRequest) returns (FLINT_RPC_MESSAGE.BottleneckReportResponse) {}
+}

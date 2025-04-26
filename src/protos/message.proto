@@ -1,0 +1,238 @@
+syntax = "proto3";
+
+package FLINT_RPC_MESSAGE;
+
+message GetFlintMetadataRequest {
+  string hostname = 1;
+}
+
+message FlintMetadata {
+  int32 ebof_port = 1;
+  map<string, uint32> ssd_id_map = 2;
+  int32 nic_ports_num = 3;
+}
+
+message GetFlintMetadataResponse {
+  int32 err_code = 1;
+  string err_message = 2;
+  FlintMetadata metadata = 3;
+}
+
+message CreateVolumeRequest {
+  string name = 1;
+  uint64 size = 2;
+  uint32 rep_factor = 3;
+  uint32 flags = 4;
+  map<string, float> ssd_preference = 5;
+  uint32 policy = 6;
+}
+
+message CreateVolumeResponse {
+  int32 err_code = 1;
+  string err_message = 2;
+}
+
+message OpenVolumeRequest {
+  string name = 1;
+}
+
+message ExtentLocator {
+  uint32 rep_role = 1;
+  uint32 ssd_id = 2;
+  uint32 pext_num = 3;
+}
+
+message ExtentLocators {
+  repeated ExtentLocator locators = 1;
+}
+
+message OpenVolumeResponse {
+  int32 err_code = 1;
+  string err_message = 2;
+  uint64 size = 3;
+  uint32 rep_factor = 4;
+  uint32 flags = 5;
+  map<uint32, ExtentLocators> extent_locator_map = 6;
+}
+
+message VolumeExtentFaultRequest {
+  string name = 1;
+  repeated uint64 lexts = 2;
+  map<string, float> ssd_preference = 3;
+  uint32 policy = 4;
+}
+
+message VolumeExtentFaultResponse {
+  int32 err_code = 1;
+  string err_message = 2;
+  map<uint32, ExtentLocators> extent_locator_map = 3;
+}
+
+message DeleteVolumeRequest {
+  string name = 1;
+}
+
+message DeleteVolumeResponse {
+  int32 err_code = 1;
+  string err_message = 2;
+}
+
+message ListVolumeRequest {
+  string name = 1;
+  bool list_all = 2;
+}
+
+message VolumeAttrs {
+  string name = 1;
+  uint64 size = 2;
+  uint32 rep_factor = 3;
+  uint32 flags = 4;
+}
+
+message ListVolumeResponse {
+  int32 err_code = 1;
+  string err_message = 2;
+  repeated VolumeAttrs vol_attrs = 3;
+}
+
+message RegisterRequest {
+  int32 client_id = 1;
+  string local_scheduler_ip = 2;
+  int32 local_scheduler_port = 3;
+  int32 ebof_port = 4;
+  int32 slo_level = 5;
+}
+
+message RegisterResponse {
+  int32 err_code = 1;
+  string err_msg = 2;
+  int32 client_id = 3;
+}
+
+message PortView {
+  int32 port_id = 1;
+  float read_bw = 2;
+  float write_bw = 3;
+  float read_iops = 4;
+  float write_iops = 5;
+  repeated uint32 read_size_dist = 6;
+  repeated uint32 write_size_dist = 7;
+  uint64 recency_counter = 8;
+}
+
+message PipeView {
+  int32 pipe_id = 1;
+  float read_bw = 2;
+  float write_bw = 3;
+  float read_iops = 4;
+  float write_iops = 5;
+  uint64 recency_counter = 6;
+}
+
+message SsdView {
+  int32 ssd_id = 1;
+  float read_bw_used = 2;
+  float write_bw_used = 3;
+  float read_bw_free = 4;
+  float write_bw_free = 5;
+
+  float read_iops = 6;
+  float write_iops = 7;
+
+  float frag_degree = 8;
+  float write_cost = 9;
+  uint64 recency_counter = 10;
+}
+
+message PartialView {
+  PortView net_port_view = 1;
+  PipeView net_pipe_view = 2;
+  map<int32, PortView> io_port_views = 3;
+  map<int32, PipeView> io_pipe_views = 4;
+  map<int32, SsdView> ssd_views = 5;
+}
+
+message PullViewRequest {
+  int32 ebof_port = 1;
+}
+
+message PullViewResponse {
+  int32 err_code = 1;
+  PartialView partial_view = 2;
+}
+
+message PushViewRequest {
+  int32 event_op = 1;
+  int32 port_or_ssd = 2;
+  PartialView partial_view = 3;
+}
+
+message PushViewResponse {
+  int32 err_code = 1;
+}
+
+message IOCompletion {
+  int32 ssd_id = 1;
+  uint32 io_type = 2;
+  uint64 size = 3;
+  uint32 lat_microsec = 4;
+  optional int32 client_id = 5;
+}
+
+message ReportCmplRequest {
+  int32 client_id = 1;
+  int32 ebof_port = 2;
+  repeated IOCompletion completions = 3;
+  bool in_sync_window = 4;
+}
+
+message ViewRecency {
+  uint64 net_port_view_recency = 1;
+  uint64 net_pipe_view_recency = 2;
+  map<int32, uint64> io_port_view_recency = 3;
+  map<int32, uint64> io_pipe_view_recency = 4;
+  map<int32, uint64> ssd_view_recency = 5;
+}
+
+message ReportCmplResponse {
+  int32 err_code = 1;
+  optional ViewRecency view_recency = 2;
+}
+
+message EventCallback {
+  int32 op = 1;
+  float threshold = 2;
+  int32 port_or_ssd = 3;
+  int32 io_type = 4;
+  int32 cmp_op = 5;
+}
+
+message RegisterEventCallbackRequest {
+  int32 client_id = 1;
+  repeated EventCallback callbacks = 2;
+}
+
+message RegisterEventCallbackResponse {
+  int32 err_code = 1;
+}
+
+message BottleneckReportRequest {
+  repeated int32 congested_ssds = 1;
+}
+
+message BottleneckReportResponse {
+  int32 err_code = 1;
+}
+
+message RequestIOSliceRequest {
+  int32 client_id = 1;
+  int32 ssd_id = 2;
+  int32 last_epoch = 3;
+}
+
+message RequestIOSliceResponse {
+  int32 err_code = 1;
+  int32 slice_size = 2;
+  int32 epoch = 3;
+  int32 wait_time = 4;
+}

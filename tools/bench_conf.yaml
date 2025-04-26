@@ -1,0 +1,25 @@
+dev_type: evol
+vol_name: test
+# dev_type: raw
+# bdev_path: /dev/nvme3n1
+
+runtime: 300
+direct_io: true
+erpc_udp_port: 31850
+size: 1g
+poll_mode: true
+# cores: 0-31
+group_based: true
+io_batch_submit: 16
+
+jobs:
+  - job:
+      num: 1
+      config:
+        access_pattern: seq
+        workload: read
+        qd: 64
+        io_size: 4k
+        group: 1
+        cores: 0-15
+        
