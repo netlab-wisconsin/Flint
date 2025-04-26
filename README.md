@@ -7,11 +7,9 @@ Flint is an elastic block storage over EBOFs. It is tenant-aware and remote targ
 delivering efficient multi-tenancy and workload adaptiveness.
 
 ## Instructions
-Firstly, install prerequisites through ```install_deps.sh```
+As the first step, create logical volumes on each FS1600 EBOF NVMe drive on the control plane web interface and connect to them via NVMe-TCP.
 
-Then, create logical volumes on each FS1600 EBOF NVMe drive on the control plane web interface and connect to them via NVMe-TCP.
-
-To build the project, run
+To build the project, install dependencies through ```install_deps.sh``` and run
 ```
 mkdir build
 cd build
